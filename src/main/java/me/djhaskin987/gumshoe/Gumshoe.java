@@ -129,7 +129,7 @@ public class Gumshoe {
     }
 
     /**
-     * Gathers all properties from all configuratoin files. Looks in the
+     * Gathers all properties from all configuration files. Looks in the
      * contents of the variable <code>&lt;PROGRAM_NAME&gt;_CONFIG_FILES</code>
      * or, if that is unset, looks in default places depending on the settings
      * in the environment:
@@ -327,10 +327,83 @@ public class Gumshoe {
     }
 
     /**
+     * <p>
      * This is the main function of Gumshoe. It gathers information from the
      * System properties, environment, configuration files, and command line
      * arguments and produces a return value from which a single merged set of
      * properties may be obtained.
+     * </p>
+     *
+     * <p>
+     * First, it gathers all properties from all configuration files. Looks in
+     * the contents of the variable
+     * <code>&lt;PROGRAMNAME&gt;_CONFIG_FILES</code> or, if that is unset, looks
+     * in default places depending on the settings in the environment:
+     * </p>
+     *
+     * <ul>
+     * <li>If <code>AppData</code> is set in the environment, it looks under
+     * <code>%APPDATA%\\&lt;programName&gt;\\config.properties</code></li>
+     *
+     * <li>If <code>XDG_CONFIG_HOME</code> is set in the environment, it looks
+     * under
+     * <code>${XDG_CONFIG_HOME}/&lt;progName&gt;/config.properties</code></li>
+     *
+     * <li>If <code>HOME</code> is set in the environment, it looks under
+     * <code>${HOME}/.&lt;programName&gt;/config.properties</code></li>
+     *
+     * <li>If <code>user.home</code> is set in the System properties but no
+     * <code>HOME</code> variable is set in the environment, it looks there
+     * instead.</li>
+     * </ul>
+     *
+     * <p>
+     * Next, it gathers properties from the environment and merges them into the
+     * properties object that will be returned.
+     * </p>
+     *
+     * <p>
+     * It looks for environment variables of the form
+     * <code>&lt;PROGRAMNAME&gt;_PROPERTY_NAME</code> and takes its value,
+     * setting a property named <code>property.name</code> in the properties
+     * object to the value of the found variable.
+     * </p>
+     *
+     * <p>
+     * Finally, this method gathers arguments from the command line and merge
+     * the results from them into the properties object being built.
+     * </p>
+     *
+     * <p>
+     * This method looks for arguments of different forms and based on what it
+     * finds it sets properties in the Properties object.
+     * </p>
+     *
+     * <ul>
+     * <li>When it sees arguments like
+     * <code>--set-property-name &lt;value&gt;</code> it sets
+     * <code>property.name</code> in the properties object to <code>value</code>
+     * </li>
+     *
+     * <li>When it sees arguments like <code>--enable-property-name</code> it
+     * sets the property <code>property.name</code> to <code>true</code></li>
+     *
+     * <li>When it sees arguments like <code>--disable-property-name</code> it
+     * sets the property <code>property.name</code> to <code>false</code></li>
+     *
+     * <li>When it sees arguments like
+     * <code>--add-property-name &lt;value&gt;</code> it sets
+     * <code>property.name</code> in the properties object to <code>value</code>
+     * if it doesn't exist in the map, or adds its value to whatever is already
+     * is there, separated by a comma (<code>,</code>)</li>
+     *
+     * <li>When it sees arguments like <code>--reset-poperty-name</code> it
+     * removes <code>property.name</code> from the properties object.</li>
+     * </ul>
+     *
+     * Then, this method returns the built <code>Properties</code> object
+     * together with any arguments that were not parsed and houses them in a
+     * <code>GumshoeReturn</code> object.
      *
      * @param programName
      *                        The name of the program that is using this
