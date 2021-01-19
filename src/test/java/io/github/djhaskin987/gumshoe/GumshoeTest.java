@@ -64,10 +64,9 @@ public class GumshoeTest {
                 Map<String, String> environment = new HashMap<String, String>();
                 Gumshoe testedInstance = new Gumshoe(finder, systemProperties,
                                 environment);
-                GumshoeReturn result = null;
                 boolean thrown = false;
                 try {
-                        result = testedInstance.gatherOptions("myprogram",
+                        testedInstance.gatherOptions("myprogram",
                                         new HashMap<String, String>(),
                                         new String[] {"--set-a-b-d" });
                 } catch (IOException ioe) {
