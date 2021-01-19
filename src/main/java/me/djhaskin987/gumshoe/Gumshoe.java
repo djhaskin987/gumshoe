@@ -322,6 +322,7 @@ public class Gumshoe {
             } else {
                 unusedArguments.add(usedArgument);
             }
+            index = index + 1;
         }
         return GumshoeReturn.createInstance(unusedArguments, results);
     }
