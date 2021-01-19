@@ -1,4 +1,4 @@
-package me.djhaskin987.gumshoe;
+package io.github.djhaskin987.gumshoe;
 
 import java.io.InputStream;
 import java.io.IOException;

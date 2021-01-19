@@ -1,4 +1,4 @@
-package me.djhaskin987.gumshoe;
+package io.github.djhaskin987.gumshoe;
 
 import java.util.List;
 import java.util.Properties;

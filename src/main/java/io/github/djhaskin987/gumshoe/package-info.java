@@ -3,4 +3,4 @@
  * information, environment variables, and command line arguments and
  * consolidates what is found into one convenient java.util.Properties object.
  */
-package me.djhaskin987.gumshoe;
+package io.github.djhaskin987.gumshoe;

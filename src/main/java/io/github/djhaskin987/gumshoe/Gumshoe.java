@@ -1,4 +1,4 @@
-package me.djhaskin987.gumshoe;
+package io.github.djhaskin987.gumshoe;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -162,6 +162,7 @@ public class Gumshoe {
 
     private void gatherConfigFiles(final Properties results,
             final String programName) throws IOException {
+
         List<String> candidates = new ArrayList<String>();
         String predefinedLocations = this.environment
                 .get(programName.toUpperCase() + "_CONFIG_FILES");
@@ -170,6 +171,9 @@ public class Gumshoe {
                 candidates.add(location);
             }
         } else {
+            if (this.systemProperties.get("file.separator") == null) {
+                return;
+            }
             String nextValue = this.environment.get("AppData");
             if (nextValue != null && !nextValue.equals("")) {
                 candidates.add(String.join(

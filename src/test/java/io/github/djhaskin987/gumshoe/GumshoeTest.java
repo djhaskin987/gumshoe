@@ -1,4 +1,4 @@
-package me.djhaskin987.gumshoe;
+package io.github.djhaskin987.gumshoe;
 
 import java.io.IOException;
 import java.util.Map;
@@ -14,6 +14,109 @@ import org.junit.Test;
  * Unit test for simple App.
  */
 public class GumshoeTest {
+
+        /**
+         * Test that the environment overrides the config file.
+         */
+        @Test
+        public void testEnvOverrides() {
+                Map<String, String> mockConfigFiles = Map.of(
+                                "/a/b/c/.myprogram/config.properties",
+                                "a.b.c=false\na.b.d=animated");
+                MockConfigFinder finder = MockConfigFinder
+                                .createInstance(mockConfigFiles);
+                Properties systemProperties = new Properties();
+                systemProperties.putAll(Map.of("file.separator", "/",
+                                "user.home", "/home", "user.dir", "/a/b/c"));
+                Map<String, String> environment = Map.of("MYPROGRAM_A_B_C",
+                                "true");
+                Gumshoe testedInstance = new Gumshoe(finder, systemProperties,
+                                environment);
+                GumshoeReturn result = null;
+                try {
+                        result = testedInstance.gatherOptions("myprogram",
+                                        Map.of("-z", "--set-a-b-z"),
+                                        new String[] {"-z", "Lord Zed", "a",
+                                                        "b", "c" });
+                } catch (IOException ioe) {
+                        Assert.fail("Couldn't open config files.");
+                } catch (Gumshoe.GumshoeException gse) {
+                        Assert.fail("Command line could not be parsed.");
+                } catch (Exception all) {
+                        Assert.fail("Some other error happened.");
+                }
+                Assert.assertNotEquals(result, null);
+                Properties props = result.getOptionsMap();
+                Assert.assertEquals("true", props.getProperty("a.b.c"));
+        }
+
+        /**
+         * Test that an exception is thrown if the arguments are given
+         * incorrectly.
+         */
+        @Test
+        public void testCLIParseError() {
+                Map<String, String> mockConfigFiles;
+                mockConfigFiles = new HashMap<String, String>();
+                MockConfigFinder finder = MockConfigFinder
+                                .createInstance(mockConfigFiles);
+                Properties systemProperties = new Properties();
+                Map<String, String> environment = new HashMap<String, String>();
+                Gumshoe testedInstance = new Gumshoe(finder, systemProperties,
+                                environment);
+                GumshoeReturn result = null;
+                boolean thrown = false;
+                try {
+                        result = testedInstance.gatherOptions("myprogram",
+                                        new HashMap<String, String>(),
+                                        new String[] {"--set-a-b-d" });
+                } catch (IOException ioe) {
+                        Assert.fail("Couldn't open config files.");
+                } catch (Gumshoe.GumshoeException gse) {
+                        thrown = true;
+                } catch (Exception all) {
+                        Assert.fail("Some other error happened.");
+                }
+                if (!thrown) {
+                        Assert.fail("No errors happened.");
+                }
+        }
+
+        /**
+         * Test that the last command wins.
+         */
+        @Test
+        public void testLastWins() {
+                Map<String, String> mockConfigFiles;
+                mockConfigFiles = new HashMap<String, String>();
+                MockConfigFinder finder = MockConfigFinder
+                                .createInstance(mockConfigFiles);
+                Properties systemProperties = new Properties();
+                Map<String, String> environment = new HashMap<String, String>();
+                Gumshoe testedInstance = new Gumshoe(finder, systemProperties,
+                                environment);
+                GumshoeReturn result = null;
+                try {
+                        result = testedInstance.gatherOptions("myprogram",
+                                        new HashMap<String, String>(),
+                                        new String[] {"--add-a-b-d",
+                                                        "vegitated",
+                                                        "--add-a-b-d",
+                                                        "parameterized",
+                                                        "--reset-a-b-d",
+                                                        "--set-a-b-d",
+                                                        "sold" });
+                } catch (IOException ioe) {
+                        Assert.fail("Couldn't open config files.");
+                } catch (Gumshoe.GumshoeException gse) {
+                        Assert.fail("Command line could not be parsed.");
+                } catch (Exception all) {
+                        Assert.fail("Some other error happened.");
+                }
+                Assert.assertNotEquals(result, null);
+                Properties props = result.getOptionsMap();
+                Assert.assertEquals("sold", props.getProperty("a.b.d"));
+        }
 
         /**
          * This test was written to test whether or not the `--add-*` stuff
