@@ -42,4 +42,4 @@ class MyProgram {
 
 ## More docs!
 
-Javadocs can be found on [javadoc.io](https://javadoc.io/doc/io.djhaskin987.github/gumshoe).
+Javadocs can be found on [javadoc.io](https://javadoc.io/doc/io.github.djhaskin987/gumshoe).
