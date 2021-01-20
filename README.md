@@ -2,34 +2,44 @@
 Grabs all available configuration.
 
 This is a Java library that grabs configuration information, environment
-variables, and command line and produces a map of strings to strings to be
-consumed by the program.
+variables, and command line and produces a `java.util.Properties` instance
+to be consumed by a java program.
 
-## Config file format
+## Quickstart
 
-```
-# whole-line comments supported
-# set a variable to something
-a.b.c=asdf
-# unset a variable, remove it from the map
-^a.b.c
-# define a variable, but don't set it to anything. Equivalent to a single
-# equals sign
-a.b.c
-```
-
-Merges the above configuration file from several configuration files, and the
-environment:
+Maven:
 
 ```
-PROGRAM_NAME_A_B_C=
-PROGRAM_NAME_A_B_D=
+<dependency>
+  <groupId>io.github.djhaskin987</groupId>
+  <artifactId>gumshoe</artifactId>
+  <version>1.0.0</version>
+</dependency>
 ```
 
-Finally, with the command line:
+Usage:
 
+```java
+import io.github.djhaskin987.gumshoe.Gumshoe;
+import io.github.djhaskin987.gumshoe.GumshoeReturn;
+
+class MyProgram {
+
+    public static void main(String []args) {
+        Gumshoe parser = Gumshoe.createInstance();
+        GumshoeReturn configResults = parser.gatherOptions(
+          "myprogram",
+          Map.of("-s", "--enable-short-names",
+                 "-a", "--set-alpha-wolf"
+                  ),
+          args);
+        Properties options = parser.getOptionsMap();
+        List<String> otherArgs = parser.getUnusedArguments();
+        // ...
+    }
+}
 ```
---set-a-b-c <thing>     Sets a-b-c
---unset-a-b-c           Removes from map, resets
---flag-a-b-c            Sets a-b-c flag
-```
+
+## More docs!
+
+Javadocs can be found on [javadoc.io](https://javadoc.io/doc/io.djhaskin987.github/gumshoe).
