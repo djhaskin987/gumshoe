@@ -348,7 +348,7 @@ public class Gumshoe {
      *
      * <ul>
      * <li>If <code>AppData</code> is set in the environment, it looks under
-     * <code>%APPDATA%\\&lt;programName&gt;\\config.properties</code></li>
+     * <code>%APPDATA%\&lt;programName&gt;\config.properties</code></li>
      *
      * <li>If <code>XDG_CONFIG_HOME</code> is set in the environment, it looks
      * under
@@ -361,6 +361,11 @@ public class Gumshoe {
      * <code>HOME</code> variable is set in the environment, it looks there
      * instead.</li>
      * </ul>
+     *
+     * Any of the above files which are found are loaded as normal properties
+     * files, except that their encoding is explicitly defined to be UTF-8
+     * instead of ISO-88859-1. Their respective properties are merged, one on
+     * top of another, in the order that they are found.
      *
      * <p>
      * Next, it gathers properties from the environment and merges them into the

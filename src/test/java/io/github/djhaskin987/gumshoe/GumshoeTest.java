@@ -13,7 +13,40 @@ import org.junit.Test;
 /**
  * Unit test for Gumshoe.
  */
+
 public class GumshoeTest {
+
+        /**
+         * Test that config files are in UTF-8.
+         */
+        @Test
+        public void testUTF8() {
+                Map<String, String> mockConfigFiles = Map.of(
+                                "/a/b/c/.myprogram/config.properties",
+                                "utf.8=✓");
+                MockConfigFinder finder = MockConfigFinder
+                                .createInstance(mockConfigFiles);
+                Properties systemProperties = new Properties();
+                systemProperties.putAll(Map.of("file.separator", "/",
+                                "user.home", "/home", "user.dir", "/a/b/c"));
+                Map<String, String> environment = new HashMap<String, String>();
+                Gumshoe testedInstance = new Gumshoe(finder, systemProperties,
+                                environment);
+                GumshoeReturn result = null;
+                try {
+                        result = testedInstance.gatherOptions("myprogram",
+                                        new HashMap<String, String>(),
+                                        new String[] {});
+                } catch (IOException ioe) {
+                        Assert.fail("Couldn't open config files.");
+                } catch (Gumshoe.GumshoeException gse) {
+                        Assert.fail("Command line could not be parsed.");
+                } catch (Exception all) {
+                        Assert.fail("Some other error happened.");
+                }
+                Properties options = result.getOptionsMap();
+                Assert.assertEquals("✓", options.getProperty("utf.8"));
+        }
 
         /**
          * Test that the environment overrides the config file.

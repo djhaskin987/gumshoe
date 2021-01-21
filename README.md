@@ -5,6 +5,11 @@ This is a Java library that grabs configuration information, environment
 variables, and command line and produces a `java.util.Properties` instance
 to be consumed by a java program.
 
+
+This makes it *dead simple* to get options implemented in your program. Just
+use Gumshoe, and you don't even have to define CLI options -- it's easy for
+your callers to simply set properties in the Properties instance using the
+command line.
 ## Quickstart
 
 Maven:
@@ -35,10 +40,40 @@ class MyProgram {
           args);
         Properties options = parser.getOptionsMap();
         List<String> otherArgs = parser.getUnusedArguments();
-        // ...
+        System.out.println(options.getProperty("alpha.wolf");
     }
 }
 ```
+
+Your callers would be able to set configuration in, e.g. `~/.myprogram/config.properties` (among other places):
+
+```
+alpha.wolf="harry"
+```
+
+In Environment Variables:
+
+```
+export MYPROGRAM_ALPHA_WOLF="larry"
+```
+
+Or, on the command line:
+
+```
+myprogram --set-alpha-wolf "nod"
+```
+
+Or, since an alias `-s` was specified in the above code snippet, this is equivalent:
+
+```
+myprogram -s "nod"
+```
+
+Command line wins over environment variables, and environment variables wins
+over configuration files. For example, if all of the above were defined, the
+output of the program would be "nod". If no argumens on the command line were
+given, it would be "larry" and if no environment variables were defined, the
+result would be "harry".
 
 ## More docs!
 
