@@ -364,8 +364,8 @@ public class Gumshoe {
      *
      * Any of the above files which are found are loaded as normal properties
      * files, except that their encoding is explicitly defined to be UTF-8
-     * instead of ISO-88859-1. Their respective properties are merged, one on
-     * top of another, in the order that they are found.
+     * instead of ISO-8859-1. Their respective properties are merged, one on top
+     * of another, in the order that they are found.
      *
      * <p>
      * Next, it gathers properties from the environment and merges them into the
